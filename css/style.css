@@ -517,7 +517,11 @@ body::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--grad-1
   .site-header, .glass-card { backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
   .chat-panel { bottom: calc(96px + env(safe-area-inset-bottom)); }
   .toast-wrap { bottom: calc(22px + env(safe-area-inset-bottom)); }
-  .header-inner { gap: .5rem; }
+  .tab-controls { flex-wrap: wrap; }
+  .progress { flex-wrap: wrap; row-gap: .3rem; }
+  .hero-content { text-align: center; }
+  .hero-cta, .hero-stats { justify-content: center; }
+  .header-inner { gap: .5rem; padding-block: .55rem; }
   .main-nav { display: none; }
   .btn-cart .cart-label { display: none; }
   .hero-cta { flex-direction: column; }

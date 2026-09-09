@@ -94,6 +94,12 @@ const AI = (() => {
 
   /* ---------- 2) المساعد الذكي ---------- */
   const INTENTS = [
+    /* طلبات التواصل مع صاحب الموقع — أولاًّ كي لا تخطفها نوايا القائمة/الطلب */
+    {
+      id: "owner",
+      keys: ["المالك", "صاحب المحل", "صاحب الموقع", "الرقم ديال", "الرقم ديالو", "بغيت نهدر مع", "بغيت نتواصل مع", "نتواصل معكم", "نتكلم مع", "عندي شكوى", "شكوى", "طلب خاص", "برا المنيو", "خارج المنيو", "كمية كبيرة", "بالجملة", "بجملة", "مشكل", "مشكلة", "بزنس", "نتعامل معكم", "عندي ملاحظة"],
+      answer: () => `صاحب الموقع (سنوكلي) كيجاوبك مباشرة على الواتساب 💬\nالرقم: +${BUSINESS.whatsapp}\nراسلو من هنا: ${waHref(BUSINESS.name + " 🤝")}\nسؤالك ديالي ولطلبات الخاصة تبقى بين الكل 🤝`
+    },
     {
       id: "greet",
       keys: ["سلام", "السلام", "العليك", "عليكم السلام", "سلامو", "اهلا", "أهلا", "مرحبا", "بونجور", "بونور", "صباح", "مساء", "صباح الخير", "هاى", "هاي", "salam", "bonjour"],
@@ -154,7 +160,7 @@ const AI = (() => {
     },
     {
       id: "payment",
-      keys: ["الخلاص", "الدفع", "الكاش", "كارت", "بطاقة", "البنك", "cmi", "على الحساب", "التمن"],
+      keys: ["الخلاص", "الدفع", "الكاش", "كارت", "بطاقة", "البنك", "cmi", "على الحساب", "التمن", "نخلص", "كيفاش نخلص"],
       answer: () => `كيخلصو الزبناء بهذي الطرق كاملة 💳:
 - كاش عند التوصل 💵
 - كارت بنكي 🏦
@@ -262,9 +268,11 @@ const AI = (() => {
 - "شنو توصي"
 - "كيفاش نطلب"
 ولا "الخلاص"
-وإلا كتب ليك شي سؤال خاص، خليه هاد شي يجاوبوك البشر على الرقم ${BUSINESS.phone}`
+وإلا كتب ليك شي سؤال خاص، خليه هاد شي يجاوبوك البشر على الرقم ${BUSINESS.phone}
+ولا راسل صاحب الموقع مباشرة: ${waHref(BUSINESS.name)}`
 
   const LATIN_KEYS = {
+    owner: ["lmalik", "lmalek", "malek", "malik", "bghit nhdar", "bghit ntkalem", "bghit ntkallem", "bghit ndir tlb xass", "tlb xass", "chkwa", "mchkil", "3andek mchkil", "jomla", "bijomla", "bsness", "bizness"],
     greet: ["slm", "slmo", "slm 3likom", "salam 3likom", "salam", "salamo", "salamo 3likom", "3likom", "3lykom", "sbah", "sbah lkhir", "sbah lxir", "sbah el khir", "mssa", "mssa lkhir", "salut", "hello", "hi", "hey", "yo", "cava", "ca va", "hola", "bonjour"],
     menu: ["lmenio", "lmenu", "menu", "ach kayn", "ach kayn 3ndkom", "ach 3ndkom", "chkoun 3ndkom", "3ndkom", "wchno kayen", "ach hadi"],
     price: ["ch7al", "chhal", "thman", "thaman", "tman", "tamane", "b9adch", "b9ach", "bqach", "b9adsh", "9adach", "qdach", "qdash", "sek"],

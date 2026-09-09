@@ -732,7 +732,11 @@
     const log = $("#chat-log");
     const div = document.createElement("div");
     div.className = "msg " + (who === "user" ? "msg-user" : "msg-bot");
-    div.textContent = text;
+    if (who === "user") {
+      div.textContent = text;
+    } else {
+      div.innerHTML = esc(text).replace(/(https:\/\/wa\.me\/\S+)/g, '<a class="chat-link" href="$1" target="_blank" rel="noopener" dir="ltr">$1</a>');
+    }
     log.appendChild(div);
     log.scrollTop = log.scrollHeight;
     return div;

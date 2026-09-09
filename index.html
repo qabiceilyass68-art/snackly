@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="سنوكلي — متجر وجبات خفيفة، طلب وتوصيل سريع وذكي">
+  <meta name="theme-color" content="#7c3aed">
+  <title>سنوكلي | وجبات خفيفة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a class="sr-only" href="#menu" data-i18n="skip">انتقل إلى المنيو</a>
+
+  <!-- خلفية متحركة -->
+  <div class="bg-decor" aria-hidden="true">
+    <span class="blob blob-1"></span>
+    <span class="blob blob-2"></span>
+    <span class="blob blob-3"></span>
+  </div>
+
+  <!-- رأس الموقع -->
+  <header class="site-header" id="site-header">
+    <div class="container header-inner">
+      <button class="brand" data-tab="customer" type="button" aria-label="الرئيسية">
+        <span class="brand-logo">🧀</span>
+        <span class="brand-name">سنوكلي</span>
+        <span class="brand-tag">Snackly</span>
+      </button>
+
+      <nav class="main-nav" aria-label="التنقل الرئيسي">
+        <a href="#menu" class="nav-link" data-i18n="nav_menu">المنيو</a>
+        <a href="#recommendations" class="nav-link" data-i18n="nav_recs">مقترحات</a>
+        <a href="#tracking" class="nav-link" data-i18n="nav_track">طلبك</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="icon-btn" id="theme-toggle" type="button" aria-label="تبديل المظهر" title="تبديل المظهر">
+          <span class="icon-moon">🌙</span>
+          <span class="icon-sun">☀️</span>
+        </button>
+        <button class="btn btn-outline header-reserve" type="button" data-scroll-to="#reserve" data-i18n="header_reserve">🪑 <span class="rv-label">طلب طاولة</span></button>
+        <div class="header-lang" id="lang-switch-head" aria-label="تغيير اللغة">
+          <button class="lang-switch" id="lang-btn" type="button" aria-controls="lang-menu" aria-expanded="false">
+            <span id="lang-current">AR</span> 🌐
+          </button>
+          <div class="lang-menu" id="lang-menu" hidden>
+            <button type="button" data-lang="ar">العربية</button>
+            <button type="button" data-lang="fr">Français</button>
+            <button type="button" data-lang="en">English</button>
+            <button type="button" data-lang="es">Español</button>
+          </div>
+        </div>
+        <button class="btn btn-cart" id="cart-open" type="button" aria-label="فتح السلة">
+          <span class="cart-emoji">🛒</span>
+          <span class="cart-label" data-i18n="cart_label">السلة</span>
+          <span class="badge" id="cart-count" hidden>0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="tab-controls container" role="tablist" aria-label="أقسام الصفحة">
+    <button class="tab-btn is-active" id="tab-customer" type="button" role="tab" aria-selected="true" data-tab="customer" data-i18n="tab_customer">🛍️ صفحة الزبون</button>
+    <button class="tab-btn" id="tab-admin" type="button" role="tab" aria-selected="false" data-tab="admin" data-i18n="tab_admin">🛠️ لوحة الإدارة</button>
+  </div>
+
+  <!-- شريط الإعلان المتحرك -->
+  <div class="ticker" id="ticker" aria-label="إعلان المحل">
+    <div class="ticker-track" id="ticker-track"></div>
+  </div>
+
+  <main id="app">
+    <!-- ====== عرض الزبون ====== -->
+    <section class="view view-customer is-visible" id="view-customer">
+
+      <!-- Hero -->
+      <section class="hero container">
+        <div class="hero-content glass-card">
+          <div class="burger-scene is-hero" id="burger-scene">
+            <div class="burger-frame b-bun-top">
+              <img class="burger-img" src="https://thumb.wikimedia.org/wikipedia/commons/thumb/4/47/Hamburger_%28black_bg%29.jpg/960px-Hamburger_%28black_bg%29.jpg" alt="" loading="lazy" onerror="this.remove()">
+              <span class="b-glint" aria-hidden="true"></span>
+              <span class="b-steam b-steam-1" aria-hidden="true"></span>
+              <span class="b-steam b-steam-2" aria-hidden="true"></span>
+            </div>
+            <span class="b-text">سنوكلي 🍔</span>
+          </div>
+          <p class="hero-eyebrow" data-i18n="hero_eyebrow">⭐ جديد في حيّك منذ 2020</p>
+          <h1 class="hero-title"><span data-i18n="hero_title1">وجبات خفيفة</span> <span class="grad-text" data-i18n="hero_title2">مع سنوكلي</span></h1>
+          <p class="hero-sub" data-i18n="hero_sub">اطلب ببضع نقرات، ونُوصلك الأطباق ساخنةً أمامك. توصيل سريع وأولوية تُحسب تلقائياً.</p>
+          <div class="hero-cta">
+            <button class="btn btn-primary" type="button" data-scroll-to="#menu" data-i18n="hero_cta1">شاهد المنيو 🍟</button>
+            <button class="btn btn-outline" type="button" data-chat-open data-i18n="hero_cta2">تحدث مع المساعد 💬</button>
+          </div>
+          <div class="hero-stats" id="hero-stats" aria-label="إحصائيات سريعة">
+            <div class="stat"><strong id="stat-items">0</strong><span data-i18n="stat_items">صنف</span></div>
+            <div class="stat"><strong id="stat-orders">0</strong><span data-i18n="stat_orders">طلب</span></div>
+            <div class="stat"><strong id="stat-avail">مفتوح</strong><span data-i18n="stat_service">الخدمة</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- التوصيات الذكية -->
+      <section class="section container" id="recommendations" aria-labelledby="rec-title">
+        <div class="section-head">
+          <div>
+            <p class="section-eyebrow" data-i18n="rec_e">✦ مقترحات بالذكاء</p>
+            <h2 class="section-title" id="rec-title" data-i18n="rec_t">مقترحات لك 🤖</h2>
+          </div>
+          <p class="section-hint" id="rec-hint"></p>
+        </div>
+        <div class="rec-row" id="rec-row" role="list"></div>
+      </section>
+
+      <!-- المنيو -->
+      <section class="section container" id="menu" aria-labelledby="menu-title">
+        <div class="section-head">
+          <div>
+            <p class="section-eyebrow" data-i18n="menu_e">✦ لائحة كاملة</p>
+            <h2 class="section-title" id="menu-title" data-i18n="menu_t">المنيو الكامل</h2>
+          </div>
+          <div class="menu-search">
+            <button class="chip is-active" type="button" data-cat="all" data-i18n="menu_all">الكل</button>
+            <span id="cat-chips" class="cat-chips" role="group" aria-label="تصنيفات"></span>
+          </div>
+        </div>
+        <div class="search-box">
+          <label class="sr-only" for="menu-search-input" data-i18n="search_ph">ابحث عن صنف...</label>
+          <input type="search" id="menu-search-input" data-i18n-ph="search_ph" placeholder="ابحث عن صنف... 🔍" autocomplete="off">
+        </div>
+        <div class="menu-grid" id="menu-grid" role="list"></div>
+        <p class="empty-note" id="menu-empty" data-i18n="menu_empty" hidden>لم نعثر على صنف بهذا الاسم 🥺</p>
+      </section>
+
+      <!-- تتبع الطلب -->
+      <section class="section container" id="tracking" aria-labelledby="tracking-title">
+        <div class="section-head">
+          <div>
+            <p class="section-eyebrow" data-i18n="track_e">✦ حالة الطلب لحظياً</p>
+            <h2 class="section-title" id="tracking-title" data-i18n="track_t">تتبع طلبك 🕒</h2>
+          </div>
+        </div>
+        <div class="tracking-list" id="tracking-list" role="list"></div>
+      </section>
+
+      <!-- التواصل والموقع -->
+      <section class="section container" id="location" aria-labelledby="loc-title">
+        <div class="section-head">
+          <div>
+            <p class="section-eyebrow" data-i18n="loc_e">✦ نصل إليك في كل مكان</p>
+            <h2 class="section-title" id="loc-title" data-i18n="loc_t">مكاننا وخدمة التوصيل 📍</h2>
+          </div>
+        </div>
+        <div class="contact-grid">
+          <div class="contact-info glass-card">
+            <img class="store-img" id="store-img" alt="" loading="lazy" onerror="this.remove()" data-reveal>
+            <h3 data-i18n="contact_t">تواصل مع سنوكلي</h3>
+            <ul class="contact-list">
+              <li><span class="ci-dot" aria-hidden="true">📍</span><div><strong data-i18n="label_address">العنوان</strong><br><span id="contact-address"></span></div></li>
+              <li><span class="ci-dot" aria-hidden="true">🕐</span><div><strong data-i18n="label_hours">ساعات الخدمة</strong><br><span id="contact-hours"></span></div></li>
+              <li><span class="ci-dot" aria-hidden="true">📞</span><div><strong data-i18n="label_phone">الهاتف</strong><br><span id="contact-phone"></span></div></li>
+              <li><span class="ci-dot" aria-hidden="true">💬</span><div><strong data-i18n="label_wa">واتساب</strong><br><span id="contact-wa-num"></span></div></li>
+            </ul>
+            <div class="contact-cta">
+              <a class="btn btn-success" id="contact-wa-btn" href="#" target="_blank" rel="noopener" data-i18n="wa_cta">أرسل عبر واتساب 💬</a>
+              <a class="btn btn-outline" id="contact-phone-btn" href="#" target="_blank" rel="noopener" data-i18n="map_cta">افتح الخريطة 🔗</a>
+            </div>
+          </div>
+          <div class="map-card glass-card">
+            <iframe id="map-frame" title="موقع سنوكلي على الخريطة" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+          </div>
+        </div>
+      </section>
+
+      <!-- تقييم المحل وآراء الزبناء -->
+      <section class="section container" id="ratings" aria-labelledby="rating-title">
+        <div class="section-head">
+          <div>
+            <p class="section-eyebrow" data-i18n="rating_e">✦ آراء الزبناء</p>
+            <h2 class="section-title" id="rating-title" data-i18n="rating_t">تقييم المحل ⭐</h2>
+          </div>
+          <p class="section-hint" id="rating-score" data-i18n="rating_stat">4.9/5 — مبني على أكثر من 400 تقييم إيجابي</p>
+        </div>
+        <div class="reviews-row" id="reviews-row" role="list"></div>
+      </section>
+
+      <!-- الفيديو الترويجي والمنصات -->
+      <section class="section container" id="video" aria-labelledby="video-title">
+        <div class="section-head">
+          <div>
+            <p class="section-eyebrow" data-i18n="video_e">✦ فيديو تعريفي</p>
+            <h2 class="section-title" id="video-title" data-i18n="video_t">اكتشف سنوكلي 🎬</h2>
+          </div>
+        </div>
+        <div class="promo-video glass-card">
+          <div class="promo-video-inner">
+            <img class="promo-poster" id="promo-poster" alt="" loading="lazy" onerror="this.remove()" data-reveal>
+            <div class="promo-overlay">
+              <span class="promo-play" aria-hidden="true">▶</span>
+              <strong data-i18n="video_hint">مساحة الفيديو الترويجي للمحل</strong>
+            </div>
+          </div>
+        </div>
+        <div class="socials">
+          <h3 data-i18n="socials_t">تابعنا على المنصات 📲</h3>
+          <div class="socials-row" id="socials-row" role="list"></div>
+        </div>
+      </section>
+
+      <!-- حجز طاولة -->
+      <section class="section container" id="reserve" aria-labelledby="reserve-title">
+        <div class="section-head">
+          <div>
+            <p class="section-eyebrow" data-i18n="reserve_e">✦ احجز طاولتك</p>
+            <h2 class="section-title" id="reserve-title" data-i18n="reserve_t">طلب طاولة 🪑</h2>
+          </div>
+        </div>
+        <form class="reserve-form glass-card" id="reserve-form" novalidate>
+          <label class="field">
+            <span data-i18n="reserve_name">الاسم</span>
+            <input name="res_name" type="text" required minlength="3" maxlength="40" data-i18n-ph="reserve_name_ph" placeholder="اسمك الكامل">
+          </label>
+          <label class="field">
+            <span data-i18n="reserve_date">التاريخ</span>
+            <input name="res_date" type="date" required>
+          </label>
+          <label class="field">
+            <span data-i18n="reserve_time">الوقت</span>
+            <input name="res_time" type="time" required>
+          </label>
+          <label class="field">
+            <span data-i18n="reserve_guests">عدد الأشخاص</span>
+            <select name="res_guests">
+              <option value="1">1</option>
+              <option value="2" selected>2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6+</option>
+            </select>
+          </label>
+          <p class="form-error" id="reserve-error" role="alert"></p>
+          <button class="btn btn-primary" type="submit" data-i18n="reserve_btn">أرسل طلب الحجز 📅</button>
+        </form>
+      </section>
+
+      <!-- التذييل + الشكاوى -->
+      <footer class="site-footer container">
+        <div class="complaint-box glass-card" id="complaint-box">
+          <h3 data-i18n="compl_t">لديك ملاحظة أو شكوى؟</h3>
+          <button class="btn btn-warn complaint-go" type="button" id="complaint-send"><span data-i18n="compl_btn">قدم شكوى</span></button>
+        </div>
+        <p><span data-i18n="footer1">© 2026 سنوكلي Snackly — صُنع بحب</span> 🇲🇦 <span data-i18n="footer2">في</span> <span id="footer-city">الرباط</span></p>
+      </footer>
+    </section>
+
+    <!-- ====== لوحة الإدارة ====== -->
+    <section class="view view-admin" id="view-admin" aria-labelledby="admin-title">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <p class="section-eyebrow">✦ إدارة الطلبات بالذكاء</p>
+            <h2 class="section-title" id="admin-title">لوحة الإدارة 🛠️</h2>
+          </div>
+          <div class="header-actions">
+            <button class="btn btn-ghost btn-sm" type="button" id="admin-logout">🔒 خروج</button>
+            <button class="btn btn-outline btn-sm" type="button" id="admin-refresh">↻ تحديث</button>
+          </div>
+        </div>
+
+        <div class="admin-cards" id="admin-cards" aria-label="بطاقات مؤشرات"></div>
+
+        <div class="panel glass-card" style="margin-bottom:1.5rem">
+          <div class="panel-head">
+            <h3>السجل اليومي 📅</h3>
+            <p class="panel-hint" id="daily-hint"></p>
+          </div>
+          <div class="daily-filters" role="group" aria-label="فترات السجل اليومي">
+            <button class="chip is-active" type="button" data-daily="week">آخر 7 أيام</button>
+            <button class="chip" type="button" data-daily="today">اليوم</button>
+            <button class="chip" type="button" data-daily="yesterday">أمس</button>
+            <button class="chip" type="button" data-daily="month">آخر 30 يوم</button>
+            <button class="chip" type="button" data-daily="all">الكل</button>
+            <button class="btn btn-ghost btn-sm" type="button" id="daily-clear">🗑 مسح السجل اليومي</button>
+          </div>
+          <div class="daily-scroll">
+            <table class="daily-table" id="daily-log">
+              <thead>
+                <tr><th>اليوم</th><th>الطلبات</th><th>الإيرادات</th><th>معدل الطلب</th><th>سُلم</th></tr>
+              </thead>
+              <tbody id="daily-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="admin-grid">
+          <div class="panel glass-card" id="orders-panel">
+            <div class="panel-head">
+              <h3>قائمة الطلبات بالأولوية 🤖</h3>
+              <p class="panel-hint" id="orders-hint"></p>
+            </div>
+            <div class="order-queue" id="order-queue" role="list"></div>
+          </div>
+
+          <div class="panel glass-card">
+            <div class="panel-head"><h3>التحليلات 📊</h3></div>
+            <div class="analytics-body" id="analytics-body"></div>
+          </div>
+        </div>
+
+        <div class="panel glass-card" style="margin-top:1.5rem">
+          <div class="panel-head">
+            <h3>سجل النظام 🪵</h3>
+            <button class="btn btn-ghost btn-sm" type="button" id="log-clear">مسح السجل</button>
+          </div>
+          <div class="log-view" id="log-view" role="log"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- السلة -->
+  <div class="overlay" id="overlay" hidden></div>
+  <aside class="drawer" id="cart-drawer" aria-label="سلة الطلب" aria-hidden="true">
+    <div class="drawer-head">
+      <h2 data-i18n="drawer_t">سلة الطلب 🛒</h2>
+      <button class="icon-btn" type="button" data-cart-close aria-label="إغلاق السلة">✕</button>
+    </div>
+    <div class="drawer-body" id="cart-items"></div>
+    <div class="drawer-foot">
+      <div class="drawer-totals">
+        <span data-i18n="drawer_total">المجموع</span>
+        <strong id="cart-total">0.00</strong><span class="currency" data-i18n="currency">درهم</span>
+      </div>
+      <button class="btn btn-primary btn-block" type="button" id="cart-checkout" data-i18n="drawer_checkout">إتمام الطلب ✅</button>
+    </div>
+  </aside>
+
+  <!-- إتمام الطلب -->
+  <div class="modal" id="checkout-modal" role="dialog" aria-modal="true" aria-labelledby="checkout-title" hidden>
+    <div class="modal-card glass-card">
+      <div class="drawer-head">
+        <h2 id="checkout-title" data-i18n="checkout_t">إتمام الطلب 📝</h2>
+        <button class="icon-btn" type="button" data-checkout-close aria-label="إغلاق">✕</button>
+      </div>
+      <form id="checkout-form" novalidate>
+        <div class="checkout-items" id="checkout-items"></div>
+        <label class="field">
+          <span data-i18n="ck_name">الاسم الكامل *</span>
+          <input name="name" type="text" required minlength="3" maxlength="40" data-i18n-ph="ck_name_ph" placeholder="مثال: يوسف العلوي">
+        </label>
+        <label class="field">
+          <span data-i18n="ck_phone">رقم الهاتف *</span>
+          <input name="phone" type="tel" required pattern="[0-9+ ()-]{9,18}" data-i18n-ph="ck_phone_ph" placeholder="06XXXXXXXX">
+        </label>
+        <label class="field">
+          <span data-i18n="ck_addr">العنوان *</span>
+          <input name="address" type="text" required minlength="5" maxlength="120" data-i18n-ph="ck_addr_ph" placeholder="الحي، الشارع، رقم المنزل">
+        </label>
+        <fieldset class="field">
+          <legend data-i18n="pay_m">طريقة الدفع</legend>
+          <div class="radio-row">
+            <label><input type="radio" name="payment" value="cash" checked> <span data-i18n="pay_cash">💵 عند الاستلام</span></label>
+            <label><input type="radio" name="payment" value="card"> <span data-i18n="pay_card">💳 بطاقة بنكية</span></label>
+            <label><input type="radio" name="payment" value="cmi"> <span data-i18n="pay_cmi">🏦 تحويل CMI</span></label>
+          </div>
+        </fieldset>
+        <p class="form-error" id="checkout-error" role="alert"></p>
+        <div class="drawer-totals">
+          <span data-i18n="total_full">المجموع الكلي</span>
+          <strong id="checkout-total">0.00</strong><span class="currency" data-i18n="currency">درهم</span>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit" data-i18n="submit">أكّد الطلب 🚀</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- رمز الدخول للإدارة -->
+  <div class="modal" id="pin-modal" role="dialog" aria-modal="true" aria-labelledby="pin-title" hidden>
+    <div class="modal-card glass-card pin-card">
+      <div class="drawer-head">
+        <h2 id="pin-title">رمز الدخول للإدارة 🔒</h2>
+        <button class="icon-btn" type="button" data-pin-close aria-label="إغلاق">✕</button>
+      </div>
+      <form id="pin-form" novalidate>
+        <p class="pin-hint">أدخل الرمز السري لفتح لوحة الإدارة</p>
+        <label class="field">
+          <span>الرمز *</span>
+          <input class="pin-input" name="pin" type="password" autocomplete="off" required>
+        </label>
+        <p class="form-error" id="pin-error" role="alert"></p>
+        <button class="btn btn-primary btn-block" type="submit">فك القفل 🔓</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- اتصال بصاحب المحل + واتساب + المساعد الذكي — صف أفقي واحد بنفس الترتيب -->
+  <div class="fab-row" id="fab-row" aria-label="تواصل معنا">
+    <a class="call-fab" id="call-fab" href="tel:" aria-label="اتصل بالمحل" title="اتصل بالمحل">📞<span class="call-dot"></span></a>
+    <a class="wa-fab" id="wa-fab" href="#" target="_blank" rel="noopener" aria-label="تواصل معنا عبر واتساب" title="واتساب سنوكلي">💬</a>
+    <button class="chat-fab" id="chat-fab" type="button" aria-label="فتح المساعد الذكي" title="المساعد الذكي">🤖</button>
+  </div>
+
+  <!-- رمز سكان الموقع ليمسحه الزبناء -->
+  <button class="qr-fab" id="qr-fab" type="button" aria-label="رمز سكان لمشاركة الموقع" title="رمز سكان للموقع أعطيه لزبائنك">QR</button>
+  <div class="modal" id="qr-modal" role="dialog" aria-modal="true" aria-labelledby="qr-title" hidden>
+    <div class="modal-card glass-card qr-card">
+      <div class="drawer-head">
+        <h2 id="qr-title">امسح رمز سكان 👉 زورنا مباشرة</h2>
+        <button class="icon-btn" type="button" data-qr-close aria-label="إغلاق">✕</button>
+      </div>
+      <img id="qr-img" alt="رمز سكان لموقع سنوكلي" width="240" height="240">
+      <a class="btn btn-primary btn-block" id="qr-link" href="#" target="_blank" rel="noopener">افتح الموقع مباشرة 🌐</a>
+    </div>
+  </div>
+  <div class="chat-panel" id="chat-panel" aria-hidden="true" role="dialog" aria-label="المساعد الذكي">
+    <div class="chat-head">
+      <div class="chat-ava">🤖</div>
+      <div>
+        <strong>سنوكلي الذكي</strong>
+        <span class="chat-status">متصل، يجاوب بنفسه</span>
+      </div>
+      <button class="icon-btn" type="button" data-chat-close aria-label="إغلاق المحادثة">✕</button>
+    </div>
+    <div class="chat-log" id="chat-log" role="log"></div>
+    <form class="chat-input" id="chat-form">
+      <label class="sr-only" for="chat-field">رسالتك</label>
+      <input id="chat-field" type="text" placeholder="اكتب هنا... اسأل عن المنيو، الثمن، الطلب" autocomplete="off">
+      <button class="btn btn-primary btn-sm" type="submit" aria-label="إرسال">أرسل ⬅</button>
+    </form>
+  </div>
+
+  <div class="toast-wrap" id="toast-wrap" aria-live="polite"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/ai.js"></script>
+  <script src="js/analytics.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

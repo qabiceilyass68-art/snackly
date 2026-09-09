@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Snackly — لوحة التحكم</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, -apple-system, sans-serif; background: #0f172a; color: #e2e8f0; margin: 0; padding: 20px; }
+    header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+    h1 { margin: 0; font-size: 22px; }
+    .card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; }
+    .stat { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 16px; }
+    .stat b { font-size: 28px; display: block; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 8px 10px; text-align: right; border-bottom: 1px solid #334155; font-size: 14px; }
+    th { color: #94a3b8; font-weight: 600; }
+    input, select, textarea, button { font: inherit; padding: 8px 10px; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: #e2e8f0; }
+    button { background: #0ea5e9; border: none; color: #082f49; font-weight: 700; cursor: pointer; }
+    button.danger { background: #f43f5e; color: #fff; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 12px; background: #334155; }
+    .badge.ok { background: #10b981; color: #022c22; }
+    .badge.warn { background: #f59e0b; color: #431407; }
+    .hidden { display: none; }
+    #login { max-width: 420px; margin: 10vh auto; }
+    .row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .muted { color: #94a3b8; font-size: 13px; }
+    .tab { display: inline-block; padding: 8px 14px; margin-left: 6px; border-radius: 8px; cursor: pointer; background: #1e293b; border: 1px solid #334155; }
+    .tab.active { background: #0ea5e9; color: #082f49; border-color: #0ea5e9; font-weight: 700; }
+    .toast { position: fixed; bottom: 20px; left: 20px; background: #10b981; color: #fff; padding: 10px 16px; border-radius: 10px; opacity: 0; transition: opacity .3s; }
+    .toast.show { opacity: 1; }
+    pre { background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 12px; overflow: auto; font-size: 12px; }
+    .chat { max-height: 300px; overflow-y: auto; }
+    .msg { padding: 6px 10px; margin: 4px 0; border-radius: 8px; max-width: 80%; }
+    .msg.in { background: #334155; }
+    .msg.out { background: #0ea5e9; color: #082f49; margin-right: auto; }
+  </style>
+</head>
+<body>
+
+<section id="login" class="card">
+  <h2>تسجيل الدخول</h2>
+  <div class="row" style="margin-bottom:12px">
+    <input id="user" placeholder="اسم المستخدم">
+    <input id="pass" type="password" placeholder="كلمة السر">
+  </div>
+  <button onclick="login()">دخول</button>
+</section>
+
+<section id="app" class="hidden">
+  <header>
+    <h1>🍔 Snackly — لوحة التحكم</h1>
+    <div class="row">
+      <button onclick="logout()" class="danger">خروج</button>
+    </div>
+  </header>
+
+  <div id="tabs" class="row" style="margin-bottom:12px">
+    <span class="tab active" data-tab="orders" onclick="switchTab('orders')">الطلبات</span>
+    <span class="tab" data-tab="catalog" onclick="switchTab('catalog')">المنتجات</span>
+    <span class="tab" data-tab="zones" onclick="switchTab('zones')">مناطق التوصيل</span>
+    <span class="tab" data-tab="chat" onclick="switchTab('chat')">المحادثات</span>
+    <span class="tab" data-tab="settings" onclick="switchTab('settings')">الإعدادات</span>
+  </div>
+
+  <div class="grid" id="stats"></div>
+
+  <div id="tab-orders" class="card">
+    <div class="row" style="margin-bottom:10px">
+      <h3 style="margin:0">الطلبات</h3>
+      <button onclick="loadOrders()">تحديث</button>
+    </div>
+    <div style="overflow-x:auto"><table id="ordersTable"></table></div>
+  </div>
+
+  <div id="tab-catalog" class="card hidden">
+    <div class="row" style="margin-bottom:10px">
+      <h3 style="margin:0">المنتجات</h3>
+      <button onclick="showProductForm()">+ إضافة</button>
+    </div>
+    <div style="overflow-x:auto"><table id="catalogTable"></table></div>
+    <div id="productForm" class="hidden" style="margin-top:12px;border-top:1px solid #334155;padding-top:10px">
+      <input id="pf-id" placeholder="المعرّف (id)">
+      <input id="pf-name" placeholder="الاسم">
+      <input id="pf-price" type="number" placeholder="الثمن دهم">
+      <input id="pf-cat" placeholder="الفئة">
+      <div class="row" style="margin-top:8px">
+        <button onclick="saveProduct()">حفظ</button>
+        <button onclick="document.getElementById('productForm').classList.add('hidden')">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-zones" class="card hidden">
+    <div class="row" style="margin-bottom:10px">
+      <h3 style="margin:0">مناطق التوصيل</h3>
+      <button onclick="showZoneForm()">+ إضافة</button>
+    </div>
+    <div style="overflow-x:auto"><table id="zonesTable"></table></div>
+    <div id="zoneForm" class="hidden" style="margin-top:12px;border-top:1px solid #334155;padding-top:10px">
+      <input id="zf-name" placeholder="اسم المنطقة">
+      <input id="zf-fee" type="number" placeholder="رسوم التوصيل دهم">
+      <input id="zf-eta" type="number" placeholder="وقت التوصيل دقيقة">
+      <div class="row" style="margin-top:8px">
+        <button onclick="saveZone()">حفظ</button>
+        <button onclick="document.getElementById('zoneForm').classList.add('hidden')">إلغاء</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-chat" class="card hidden">
+    <h3>المحادثات</h3>
+    <div id="convList"></div>
+    <div id="convDetail" class="hidden" style="margin-top:12px">
+      <h4 id="convHeader"></h4>
+      <div class="chat" id="convMsgs"></div>
+      <div class="row" style="margin-top:8px">
+        <input id="manualMsg" placeholder="رسالة يدوية..." style="flex:1">
+        <button onclick="sendManual()">إرسال</button>
+        <button id="takeOverBtn" onclick="toggleTakeOver()">إيقاف البوت لهذا الزبون</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-settings" class="card hidden">
+    <h3>الإعدادات</h3>
+    <div class="row">
+      <label>البوت مفعّل (عام):</label>
+      <select id="st-boton" onchange="saveSettings()"><option value="1">نعم</option><option value="0">لا</option></select>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <label>رسوم التوصيل الافتراضية (دهم):</label>
+      <input id="st-fee" type="number" onchange="saveSettings()">
+    </div>
+    <div class="row" style="margin-top:10px">
+      <label>بادئة الطلب:</label>
+      <input id="st-prefix" onchange="saveSettings()">
+    </div>
+  </div>
+</section>
+
+<div id="toast" class="toast"></div>
+
+<script>
+let token = null;
+const API = "/api";
+
+async function req(method, path, body) {
+  const res = await fetch(API + path, {
+    method,
+    headers: { "content-type": "application/json", ...(token ? { authorization: "Bearer " + token } : {}) },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  return res.json();
+}
+function toast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2200);
+}
+function itemLabel(st) {
+  return { NEW: "جديد", PENDING_CONFIRMATION: "بانتظار التأكيد", CONFIRMED: "مؤكد", PREPARING: "في التحضير", OUT_FOR_DELIVERY: "في الطريق", DELIVERED: "تم التسليم", CANCELLED: "ملغي" }[st] || st;
+}
+
+async function login() {
+  const user = document.getElementById("user").value.trim();
+  const pass = document.getElementById("pass").value;
+  const res = await fetch(API + "/session", {
+    method: "POST",
+    headers: { "content-type": "application/json", authorization: "Basic " + btoa(user + ":" + pass) },
+    body: JSON.stringify({ action: "login" }),
+  });
+  const data = await res.json();
+  if (data.token) {
+    token = data.token;
+    document.getElementById("login").classList.add("hidden");
+    document.getElementById("app").classList.remove("hidden");
+    refreshAll();
+  } else toast("بيانات دخول خاطئة");
+}
+async function logout() {
+  await req("POST", "/session", { action: "logout" });
+  token = null; location.reload();
+}
+function refreshAll() { loadStats(); loadOrders(); loadCatalog(); loadZones(); loadConvList(); loadSettings(); }
+
+// Stats
+async function loadStats() {
+  const s = await req("GET", "/stats");
+  document.getElementById("stats").innerHTML = `
+    <div class="stat"><b>${s.orders ?? 0}</b>إجمالي الطلبات</div>
+    <div class="stat"><b>${s.new_orders ?? 0}</b>طلبات جديدة</div>
+    <div class="stat"><b>${s.active_orders ?? 0}</b>طلبات نشطة</div>
+    <div class="stat"><b>${s.products ?? 0}</b>منتجات</div>
+    <div class="stat"><b>${s.conversations ?? 0}</b>محادثات</div>`;
+}
+async function loadOrders() {
+  const d = await req("GET", "/orders");
+  const items = d.orders || [];
+  const rows = items.map(o => {
+    const list = (o.items || []).map(i => `${i.name} x${i.qty}`).join("<br>");
+    return `<tr>
+      <td>${o.id}</td><td>${o.wa_phone}</td><td>${list}</td>
+      <td>${o.total} دهم</td>
+      <td><select onchange="setStatus('${o.id}', this.value)">
+        ${["NEW","PENDING_CONFIRMATION","CONFIRMED","PREPARING","OUT_FOR_DELIVERY","DELIVERED","CANCELLED"].map(s =>
+          `<option value="${s}" ${o.status === s ? "selected" : ""}>${itemLabel(s)}</option>`).join("")}
+      </select></td>
+      <td class="muted">${(o.created_at || "").slice(0, 16)}</td></tr>`;
+  }).join("");
+  document.getElementById("ordersTable").innerHTML = rows
+    ? `<tr><th>المعرّف</th><th>الهاتف</th><th>البنود</th><th>المجموع</th><th>الحالة</th><th>التاريخ</th></tr>${rows}`
+    : `<tr><td class="muted">لا طلبات بعد</td></tr>`;
+}
+async function setStatus(id, status) {
+  await req("PUT", "/orders/" + encodeURIComponent(id), { status });
+  toast("تم تحديث الحالة");
+}
+
+// Catalog
+async function loadCatalog() {
+  const d = await req("GET", "/products");
+  const rows = (d.products || []).map(p => `<tr>
+    <td>${p.emoji}</td><td>${p.id}</td><td>${p.name}</td><td>${p.price} دهم</td>
+    <td>${p.category}</td>
+    <td>${p.available == 1 ? '<span class="badge ok">متوفر</span>' : '<span class="badge warn">مخفي</span>'}</td>
+    <td><button onclick="toggleProduct('${p.id}', ${p.available == 1 ? 0 : 1})">${p.available == 1 ? "إخفاء" : "إظهار"}</button>
+        <button class="danger" onclick="deleteProduct('${p.id}')">حذف</button></td></tr>`).join("");
+  document.getElementById("catalogTable").innerHTML = rows
+    ? `<tr><th></th><th>المعرّف</th><th>الاسم</th><th>الثمن</th><th>الفئة</th><th>الحالة</th><th></th></tr>${rows}`
+    : `<tr><td class="muted">لا منتجات</td></tr>`;
+}
+function showProductForm() { document.getElementById("productForm").classList.remove("hidden"); }
+async function saveProduct() {
+  await req("POST", "/products", {
+    id: document.getElementById("pf-id").value.trim(),
+    name: document.getElementById("pf-name").value.trim(),
+    price: Number(document.getElementById("pf-price").value),
+    category: document.getElementById("pf-cat").value.trim() || "عام",
+  });
+  document.getElementById("productForm").classList.add("hidden");
+  loadCatalog(); toast("تم الحفظ");
+}
+async function toggleProduct(id, v) { await req("PUT", "/products/" + id, { available: v }); loadCatalog(); }
+async function deleteProduct(id) {
+  if (!confirm("حذف " + id + "؟")) return;
+  await req("DELETE", "/products/" + id); loadCatalog(); toast("تم الحذف");
+}
+
+// Zones
+async function loadZones() {
+  const d = await req("GET", "/zones");
+  const rows = (d.zones || []).map(z => `<tr>
+    <td>${z.id}</td><td>${z.name}</td><td>${z.fee} دهم</td><td>${z.eta_min} د</td>
+    <td>${z.available == 1 ? '<span class="badge ok">مفعلة</span>' : '<span class="badge warn">معطلة</span>'}</td>
+    <td><button onclick="toggleZone(${z.id}, ${z.available == 1 ? 0 : 1})">${z.available == 1 ? "تعطيل" : "تفعيل"}</button>
+        <button class="danger" onclick="deleteZone(${z.id})">حذف</button></td></tr>`).join("");
+  document.getElementById("zonesTable").innerHTML = rows
+    ? `<tr><th>#</th><th>الاسم</th><th>الرسوم</th><th>الوقت</th><th>الحالة</th><th></th></tr>${rows}`
+    : `<tr><td class="muted">لا مناطق — أضف منطقة أولاً (مطلوب للتوصيل)</td></tr>`;
+}
+function showZoneForm() { document.getElementById("zoneForm").classList.remove("hidden"); }
+async function saveZone() {
+  await req("POST", "/zones", {
+    name: document.getElementById("zf-name").value.trim(),
+    fee: Number(document.getElementById("zf-fee").value) || 0,
+    etaMin: Number(document.getElementById("zf-eta").value) || 30,
+  });
+  document.getElementById("zoneForm").classList.add("hidden");
+  loadZones(); toast("تمت الإضافة");
+}
+async function toggleZone(id, v) { await req("PUT", "/zones/" + id, { available: v }); loadZones(); }
+async function deleteZone(id) { await req("DELETE", "/zones/" + id); loadZones(); }
+
+// Conversations
+let currentConv = null;
+async function loadConvList() {
+  const d = await req("GET", "/conversations");
+  const list = document.getElementById("convList");
+  list.innerHTML = "";
+  for (const c of ((d.conversations || []).slice(0, 50))) {
+    const el = document.createElement("div");
+    el.className = "muted";
+    el.style.cursor = "pointer";
+    el.style.padding = "6px 0";
+    el.innerHTML = `${c.wa_phone} ${c.bot_enabled == 0 ? '<span class="badge warn">إيقاف بوت</span>' : ''}`;
+    el.onclick = () => openConv(c.wa_phone);
+    list.appendChild(el);
+  }
+}
+async function openConv(phone) {
+  currentConv = phone;
+  const d = await req("GET", "/conversations/" + encodeURIComponent(phone));
+  if (!d.conversation) return;
+  document.getElementById("convDetail").classList.remove("hidden");
+  document.getElementById("convHeader").textContent = phone;
+  document.getElementById("convMsgs").innerHTML = (d.messages || []).map(m =>
+    `<div class="msg ${m.direction}">${m.text}</div>`).join("");
+  document.getElementById("takeOverBtn").textContent =
+    d.conversation.bot_enabled == 0 ? "إعادة تشغيل البوت" : "إيقاف البوت لهذا الزبون";
+}
+async function toggleTakeOver() {
+  if (!currentConv) return;
+  const c = await req("GET", "/conversations/" + encodeURIComponent(currentConv));
+  const cur = c.conversation.bot_enabled;
+  await req("PUT", "/conversations/" + encodeURIComponent(currentConv), { bot_enabled: cur == 1 ? 0 : 1 });
+  openConv(currentConv);
+}
+async function sendManual() {
+  if (!currentConv) return;
+  const t = document.getElementById("manualMsg").value.trim();
+  if (!t) return;
+  await req("POST", "/conversations/" + encodeURIComponent(currentConv) + "/send", { text: t });
+  document.getElementById("manualMsg").value = "";
+  openConv(currentConv);
+}
+
+// Settings
+async function loadSettings() {
+  const s = await req("GET", "/settings");
+  document.getElementById("st-boton").value = s.bot_global_enabled || "1";
+  document.getElementById("st-fee").value = s.default_delivery_fee || "0";
+  document.getElementById("st-prefix").value = s.order_prefix || "SNK-";
+}
+async function saveSettings() {
+  await req("POST", "/settings", {
+    bot_global_enabled: document.getElementById("st-boton").value,
+    default_delivery_fee: String(document.getElementById("st-fee").value),
+    order_prefix: document.getElementById("st-prefix").value,
+  });
+  toast("تم الحفظ");
+}
+
+function switchTab(name) {
+  for (const b of document.querySelectorAll(".tab")) b.classList.toggle("active", b.dataset.tab === name);
+  for (const el of document.querySelectorAll("[id^=tab-]")) el.classList.add("hidden");
+  document.getElementById("tab-" + name).classList.remove("hidden");
+}
+</script>
+</body>
+</html>

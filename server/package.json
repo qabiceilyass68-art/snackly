@@ -1,0 +1,14 @@
+{
+  "name": "snackly-whatsapp-server",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Snackly — استقبال طلبات الواتساب آلياً عبر Meta WhatsApp Cloud API (صفر اعتماديات، Node >= 22.5)",
+  "type": "module",
+  "engines": { "node": ">=22.5.0" },
+  "scripts": {
+    "start": "node index.js",
+    "seed": "node src/seed.js",
+    "test": "node --test \"test/*.test.js\""
+  },
+  "license": "UNLICENSED"
+}

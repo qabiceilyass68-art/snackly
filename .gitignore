@@ -1,0 +1,7 @@
+# السرّي — لا يُدفع أبداً
+server/.env
+server/data/
+*.db
+*.db-journal
+node_modules/
+.DS_Store

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EarthGuard — A Greener Planet for Generations</title>
+  <style>
+    html { scrollbar-width: none; }
+    html::-webkit-scrollbar { display: none; }
+    body::-webkit-scrollbar { display: none; }
+    .glass-nav {
+      background: transparent;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+    }
+    .glass-card:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(134, 208, 40, 0.3);
+    }
+    .glass-button {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+    }
+    .glass-button:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+    .text-glow {
+      text-shadow: 0 0 20px rgba(134, 208, 40, 0.35);
+    }
+    .hero-title-shadow {
+      text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+    }
+    .video-overlay {
+      background:
+        radial-gradient(circle at 50% 45%, rgba(134, 208, 40, 0.04) 0%, rgba(11, 25, 30, 0.3) 45%, rgba(6, 14, 18, 0.85) 85%, rgba(3, 8, 10, 0.96) 100%),
+        linear-gradient(to bottom, rgba(5, 12, 15, 0.85) 0%, transparent 20%, transparent 75%, rgba(4, 10, 12, 0.95) 100%),
+        linear-gradient(to right, rgba(5, 12, 15, 0.75) 0%, transparent 35%, transparent 65%, rgba(5, 12, 15, 0.75) 100%);
+    }
+  </style>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Instrument+Serif:ital@1&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brand: {
+            green: '#86d028',
+            greenHover: '#76b821',
+            greenDark: '#5a9216',
+            tealDark: '#0b191e',
+            glow: 'rgba(134, 208, 40, 0.4)'
+          }
+        },
+        fontFamily: {
+          heading: ['Syne', 'sans-serif'],
+          serif: ['"Instrument Serif"', 'serif'],
+          sans: ['"Space Grotesk"', 'sans-serif']
+        },
+        animation: {
+          'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+          'bounce-slow': 'bounce 2.5s infinite',
+          'float': 'float 6s ease-in-out infinite',
+          'glow': 'glow 3s ease-in-out infinite alternate'
+        },
+        keyframes: {
+          float: { '0%, 100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-14px)' } },
+          glow: { '0%': { opacity: '0.7' }, '100%': { opacity: '1' } }
+        }
+      }
+    }
+  };</script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body class="bg-[#0b191e] text-white font-sans antialiased overflow-x-hidden min-h-screen relative flex flex-col justify-between selection:bg-brand-green selection:text-[#0b191e]">
+
+  <!-- Background Video Layer -->
+  <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
+    <video id="heroVideo" class="absolute inset-0 w-full h-full object-cover scale-105 transition-transform duration-1000 ease-out" autoplay muted loop playsinline
+      poster="https://strvid.nyc3.cdn.digitaloceanspaces.com/motionsite/hero-bg-glass-ball-1_5mb.mp4"
+      src="https://strvid.nyc3.cdn.digitaloceanspaces.com/motionsite/hero-bg-glass-ball-1_5mb.mp4"></video>
+    <div class="absolute inset-0 video-overlay"></div>
+  </div>
+
+  <!-- Header / Navigation -->
+  <header class="w-full fixed top-0 left-0 right-0 z-50 glass-nav transition-all duration-300">
+    <div class="max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 h-20 sm:h-24 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="relative w-10 h-10 rounded-full border border-white/20 bg-white/5 backdrop-blur-md flex items-center justify-center">
+          <i data-lucide="leaf" class="w-5 h-5 text-brand-green"></i>
+          <span class="absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-brand-green animate-pulse"></span>
+        </div>
+        <div class="leading-tight">
+          <p class="font-heading font-extrabold tracking-wider text-xl sm:text-2xl text-white">EARTHGUARD</p>
+          <p class="text-[9px] sm:text-[10px] font-semibold tracking-[0.25em] text-white/60 uppercase">A GREENER PLANET FOR GENERATIONS</p>
+        </div>
+      </div>
+
+      <nav class="hidden md:flex items-center gap-8 lg:gap-10">
+        <a href="#" class="text-xs lg:text-sm font-semibold tracking-widest text-white/80 hover:text-white uppercase relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-brand-green hover:after:w-full after:transition-all after:duration-300">SOLUTIONS</a>
+        <a href="#" class="text-xs lg:text-sm font-semibold tracking-widest text-white/80 hover:text-white uppercase relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-brand-green hover:after:w-full after:transition-all after:duration-300">IMPACT</a>
+        <a href="#" class="text-xs lg:text-sm font-semibold tracking-widest text-white/80 hover:text-white uppercase relative py-1 after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[2px] after:bg-brand-green hover:after:w-full after:transition-all after:duration-300">ABOUT US</a>
+      </nav>
+
+      <div class="flex items-center gap-3">
+        <a href="#" class="glass-button hidden sm:flex px-5 py-2.5 rounded-full text-xs font-bold tracking-widest uppercase text-white items-center gap-2 hover:border-brand-green hover:text-brand-green transition-all duration-300 shadow-lg hover:shadow-brand-green/20">GET STARTED</a>
+        <button id="mobileMenuBtn" type="button" aria-label="Toggle menu" class="md:hidden w-11 h-11 rounded-full glass-button flex items-center justify-center">
+          <span id="mobileMenuIcon"><i data-lucide="menu"></i></span>
+        </button>
+      </div>
+    </div>
+
+    <div id="mobileMenu" class="hidden md:hidden bg-[#0b191e]/95 backdrop-blur-xl border-t border-white/10 px-6 py-6 flex-col gap-4">
+      <a href="#" class="text-sm font-semibold tracking-widest text-white/80 hover:text-brand-green uppercase transition-colors">SOLUTIONS</a>
+      <a href="#" class="text-sm font-semibold tracking-widest text-white/80 hover:text-brand-green uppercase transition-colors">IMPACT</a>
+      <a href="#" class="text-sm font-semibold tracking-widest text-white/80 hover:text-brand-green uppercase transition-colors">ABOUT US</a>
+      <a href="#" class="glass-button w-full px-5 py-3 rounded-full text-xs font-bold tracking-widest uppercase text-white flex items-center justify-center gap-2 hover:border-brand-green hover:text-brand-green transition-all duration-300">GET STARTED</a>
+    </div>
+  </header>
+
+  <!-- Hero Main -->
+  <main class="relative z-10 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center max-w-[1440px] mx-auto px-6 sm:px-8 lg:px-12 pt-28 sm:pt-36 pb-16">
+    <div class="lg:col-span-7 xl:col-span-6">
+      <div class="flex items-center gap-3 mb-6">
+        <span class="w-8 h-[2px] bg-brand-green rounded-full"></span>
+        <p class="text-xs sm:text-sm font-bold tracking-[0.2em] text-brand-green uppercase">SUSTAINABILITY FOR TOMORROW</p>
+      </div>
+
+      <h1 class="mb-6">
+        <span class="block font-heading font-extrabold text-4xl sm:text-6xl xl:text-[68px] leading-[1.08] uppercase tracking-tight text-white hero-title-shadow">BUILDING TOMORROW.</span>
+        <span class="block font-serif italic font-normal text-brand-green text-glow capitalize text-5xl sm:text-7xl xl:text-[76px] tracking-normal mt-1">Protecting Today.</span>
+      </h1>
+
+      <p class="text-white/80 text-base sm:text-lg font-normal max-w-md leading-relaxed mb-8">Innovative solutions protecting our planet for generations to come.</p>
+
+      <div class="flex flex-wrap items-center gap-4">
+        <a href="#" class="bg-brand-green hover:bg-brand-greenHover text-[#0b191e] font-extrabold text-xs sm:text-sm tracking-widest uppercase px-7 py-4 rounded-full flex items-center gap-3 transition-all duration-300 transform hover:scale-[1.03] shadow-lg shadow-brand-green/30 hover:shadow-brand-green/50">
+          <i data-lucide="leaf" class="w-5 h-5"></i>EXPLORE SOLUTIONS
+        </a>
+        <button id="openVideoModal" type="button" class="glass-button text-white font-semibold text-xs sm:text-sm tracking-widest uppercase px-7 py-4 rounded-full flex items-center gap-3 transition-all duration-300 hover:border-white/60">
+          <span class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center"><i data-lucide="play" class="w-4 h-4 ml-0.5 text-brand-green"></i></span>
+          WATCH VIDEO
+        </button>
+      </div>
+    </div>
+
+    <div class="hidden lg:block lg:col-span-1 xl:col-span-2"></div>
+
+    <div class="lg:col-span-4 flex flex-col justify-center items-start lg:items-end">
+      <div class="max-w-xs space-y-4 w-full">
+        <div class="glass-card rounded-2xl p-6 flex items-center gap-4 transition-all duration-300">
+          <span class="w-12 h-12 rounded-full bg-brand-green/10 flex items-center justify-center shrink-0"><i data-lucide="cloud" class="w-6 h-6 text-brand-green"></i></span>
+          <div>
+            <p class="font-heading font-extrabold text-3xl text-white animate-pulse-slow">2.4M</p>
+            <p class="text-[11px] font-bold tracking-widest text-brand-green uppercase">TONS CO₂ REDUCED</p>
+          </div>
+        </div>
+        <div class="glass-card rounded-2xl p-6 flex items-center gap-4 transition-all duration-300">
+          <span class="w-12 h-12 rounded-full bg-brand-green/10 flex items-center justify-center shrink-0"><i data-lucide="globe" class="w-6 h-6 text-brand-green"></i></span>
+          <div>
+            <p class="font-heading font-extrabold text-3xl text-white animate-pulse-slow">120+</p>
+            <p class="text-[11px] font-bold tracking-widest text-brand-green uppercase">GLOBAL PROJECTS</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer Controls Bar -->
+  <footer class="fixed bottom-0 left-0 right-0 w-full py-6 z-20 px-6 sm:px-8 lg:px-12 max-w-[1440px] mx-auto flex items-end justify-between gap-6">
+    <div class="flex items-center gap-3">
+      <button id="toggleAudioBtn" type="button" aria-label="Toggle sound" class="glass-button w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300">
+        <span id="audioIcon"><i data-lucide="volume-x"></i></span>
+      </button>
+      <button id="togglePlayBtn" type="button" aria-label="Play or pause video" class="glass-button w-11 h-11 rounded-full flex items-center justify-center transition-all duration-300">
+        <span id="playIcon"><i data-lucide="pause"></i></span>
+      </button>
+    </div>
+
+    <div class="group flex flex-col items-center gap-2">
+      <div class="w-7 h-11 rounded-full border-2 border-white/30 group-hover:border-brand-green flex justify-center pt-2 transition-colors duration-300">
+        <span class="w-1 h-2.5 rounded-full bg-brand-green animate-bounce-slow"></span>
+      </div>
+      <p class="text-[10px] font-semibold tracking-[0.3em] text-white/50 uppercase">SCROLL DOWN</p>
+    </div>
+
+    <p class="text-[11px] font-medium tracking-widest text-white/40 uppercase hidden sm:block">EARTHGUARD ECO OS v2.4</p>
+  </footer>
+
+  <!-- Video Documentary Modal -->
+  <div id="videoModal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-black/80 backdrop-blur-xl p-4 sm:p-8">
+    <div class="max-w-4xl w-full bg-[#0b191e] border border-white/20 rounded-2xl overflow-hidden shadow-2xl">
+      <div class="flex items-center justify-between px-6 py-4 border-b border-white/10">
+        <p class="font-heading font-bold tracking-wide text-white">EarthGuard — Sustainability Documentary</p>
+        <button id="closeVideoModal" type="button" aria-label="Close video" class="glass-button w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300">
+          <i data-lucide="x"></i>
+        </button>
+      </div>
+      <video id="modalVideo" class="w-full aspect-video" controls playsinline
+        src="https://strvid.nyc3.cdn.digitaloceanspaces.com/motionsite/hero-bg-glass-ball-1_5mb.mp4"></video>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.lucide) { lucide.createIcons(); }
+
+      var heroVideo = document.getElementById('heroVideo');
+      var modalVideo = document.getElementById('modalVideo');
+
+      function swapIcon(slot, name) {
+        if (!slot) { return; }
+        slot.innerHTML = '<i data-lucide="' + name + '"></i>';
+        if (window.lucide) { lucide.createIcons(); }
+      }
+
+      var mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      var mobileMenu = document.getElementById('mobileMenu');
+      var mobileMenuIcon = document.getElementById('mobileMenuIcon');
+      if (mobileMenuBtn && mobileMenu) {
+        mobileMenuBtn.addEventListener('click', function () {
+          var open = mobileMenu.classList.toggle('flex');
+          mobileMenu.classList.toggle('hidden', !open);
+          swapIcon(mobileMenuIcon, open ? 'x' : 'menu');
+        });
+      }
+
+      var toggleAudioBtn = document.getElementById('toggleAudioBtn');
+      var audioIcon = document.getElementById('audioIcon');
+      if (toggleAudioBtn && audioIcon && heroVideo) {
+        toggleAudioBtn.addEventListener('click', function () {
+          heroVideo.muted = !heroVideo.muted;
+          swapIcon(audioIcon, heroVideo.muted ? 'volume-x' : 'volume-2');
+        });
+      }
+
+      var togglePlayBtn = document.getElementById('togglePlayBtn');
+      var playIcon = document.getElementById('playIcon');
+      if (togglePlayBtn && playIcon && heroVideo) {
+        togglePlayBtn.addEventListener('click', function () {
+          if (heroVideo.paused) { heroVideo.play(); } else { heroVideo.pause(); }
+          swapIcon(playIcon, heroVideo.paused ? 'play' : 'pause');
+        });
+      }
+
+      var openVideoModal = document.getElementById('openVideoModal');
+      var closeVideoModal = document.getElementById('closeVideoModal');
+      var videoModal = document.getElementById('videoModal');
+
+      function openModal() {
+        if (!videoModal) { return; }
+        videoModal.classList.remove('hidden');
+        if (modalVideo) { modalVideo.play(); }
+      }
+      function closeModal() {
+        if (modalVideo) { modalVideo.pause(); modalVideo.currentTime = 0; }
+        if (videoModal) { videoModal.classList.add('hidden'); }
+      }
+      if (openVideoModal) { openVideoModal.addEventListener('click', openModal); }
+      if (closeVideoModal) { closeVideoModal.addEventListener('click', closeModal); }
+      if (videoModal) {
+        videoModal.addEventListener('click', function (e) {
+          if (e.target === videoModal) { closeModal(); }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

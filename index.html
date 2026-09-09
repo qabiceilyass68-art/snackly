@@ -222,7 +222,7 @@
         <form class="reserve-form glass-card" id="reserve-form" novalidate>
           <label class="field">
             <span data-i18n="reserve_name">الاسم</span>
-            <input name="res_name" type="text" required minlength="3" maxlength="40" data-i18n-ph="reserve_name_ph" placeholder="اسمك الكامل">
+            <input name="res_name" type="text" required minlength="3" maxlength="40" autocomplete="name" data-i18n-ph="reserve_name_ph" placeholder="اسمك الكامل">
           </label>
           <label class="field">
             <span data-i18n="reserve_date">التاريخ</span>
@@ -269,6 +269,7 @@
           <div class="header-actions">
             <button class="btn btn-ghost btn-sm" type="button" id="admin-logout">🔒 خروج</button>
             <button class="btn btn-outline btn-sm" type="button" id="admin-refresh">↻ تحديث</button>
+            <button class="btn btn-outline btn-sm" type="button" id="orders-export">📄 تصدير الطلبات CSV</button>
           </div>
         </div>
 
@@ -299,6 +300,7 @@
             <button class="chip" type="button" data-daily="month">آخر 30 يوم</button>
             <button class="chip" type="button" data-daily="all">الكل</button>
             <button class="btn btn-ghost btn-sm" type="button" id="daily-clear">🗑 مسح السجل اليومي</button>
+            <button class="btn btn-outline btn-sm" type="button" id="daily-export">📄 تصدير السجل CSV</button>
           </div>
           <div class="daily-scroll">
             <table class="daily-table" id="daily-log">
@@ -364,15 +366,15 @@
         <div class="checkout-items" id="checkout-items"></div>
         <label class="field">
           <span data-i18n="ck_name">الاسم الكامل *</span>
-          <input name="name" type="text" required minlength="3" maxlength="40" data-i18n-ph="ck_name_ph" placeholder="مثال: يوسف العلوي">
+          <input name="name" type="text" required minlength="3" maxlength="40" autocomplete="name" data-i18n-ph="ck_name_ph" placeholder="مثال: يوسف العلوي">
         </label>
         <label class="field">
           <span data-i18n="ck_phone">رقم الهاتف *</span>
-          <input name="phone" type="tel" required pattern="[0-9+ ()-]{9,18}" data-i18n-ph="ck_phone_ph" placeholder="06XXXXXXXX">
+          <input name="phone" type="tel" required pattern="[0-9+ ()-]{9,18}" autocomplete="tel" data-i18n-ph="ck_phone_ph" placeholder="06XXXXXXXX">
         </label>
         <label class="field">
           <span data-i18n="ck_addr">العنوان *</span>
-          <input name="address" type="text" required minlength="5" maxlength="120" data-i18n-ph="ck_addr_ph" placeholder="الحي، الشارع، رقم المنزل">
+          <input name="address" type="text" required minlength="5" maxlength="120" autocomplete="street-address" data-i18n-ph="ck_addr_ph" placeholder="الحي، الشارع، رقم المنزل">
         </label>
         <fieldset class="field">
           <legend data-i18n="pay_m">طريقة الدفع</legend>

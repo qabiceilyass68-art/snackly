@@ -85,11 +85,13 @@
   }
   function openPinModal() {
     $("#pin-modal").hidden = false;
+    a11yOpen($("#pin-modal"));
     document.body.style.overflow = "hidden";
     const pin = $("#pin-form").pin;
     if (pin && pin.focus) pin.focus();
   }
   function closePinModal() {
+    a11yClose();
     $("#pin-modal").hidden = true;
     document.body.style.overflow = "";
     $("#pin-error").textContent = "";
@@ -101,9 +103,11 @@
     $("#qr-img").src = "https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=10&data=" + encodeURIComponent(site);
     $("#qr-link").setAttribute("href", site);
     $("#qr-modal").hidden = false;
+    a11yOpen($("#qr-modal"));
     document.body.style.overflow = "hidden";
   }
   function closeQrModal() {
+    a11yClose();
     $("#qr-modal").hidden = true;
     document.body.style.overflow = "";
   }
@@ -234,7 +238,7 @@
             <span class="qty-num">${l.qty}</span>
             <button class="qty-btn" type="button" data-q="up" aria-label="زيد">+</button>
           </div>
-          <button class="ci-remove" type="button" data-remove="${l.it.id}">🗑</button>
+          <button class="ci-remove" type="button" data-remove="${l.it.id}" aria-label="${esc(Lang.t("remove_btn"))}">🗑</button>
         </div>`).join("");
     }
     $("#cart-total").textContent = fmtMoney(cartTotal());
@@ -528,7 +532,12 @@
       box.innerHTML = '<p class="empty-note">' + esc(Lang.t("track_empty")) + '</p>';
       return;
     }
-    box.innerHTML = mine.map(o => `
+    box.innerHTML = mine.map(o => {
+      const cancellable = o.status === ORDER_STATUS.NEW.key || o.status === ORDER_STATUS.PREP.key;
+      const cancelBtn = cancellable
+        ? `<button class="btn btn-danger btn-sm" type="button" data-track-cancel="${esc(o.id)}">${esc(Lang.t("track_cancel"))}</button>`
+        : "";
+      return `
       <article class="track-card glass-card">
         <div class="track-head">
           <strong class="track-id">${esc(o.id)}</strong>
@@ -536,18 +545,41 @@
         </div>
         <div class="track-items">${esc(o.items.map(i => Lang.dish(i.id) + " × " + i.qty).join(" • "))} — ${fmtMoney(o.total)} ${esc(Lang.t("currency"))}</div>
         <div class="progress">${progressFor(o)}</div>
-      </article>`).join("");
+        ${cancelBtn}
+      </article>`;
+    }).join("");
+  }
+
+  /* ---------- إمكانية الوصول: إرجاع التركيز وحبس Tab داخل النوافذ ---------- */
+  let _focusBack = null;
+  let _trapRoot = null;
+  function a11yFocusables(root) {
+    return Array.from(root.querySelectorAll("a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled])")).filter(el => !el.closest("[hidden]"));
+  }
+  function a11yOpen(root) {
+    _focusBack = document.activeElement;
+    _trapRoot = root;
+    const first = a11yFocusables(root)[0];
+    if (first && first.focus) first.focus();
+  }
+  function a11yRecord() { _focusBack = document.activeElement; }
+  function a11yClose() {
+    _trapRoot = null;
+    const back = _focusBack;
+    _focusBack = null;
+    if (back && back.focus && typeof back.focus === "function" && document.contains(back)) back.focus();
   }
 
   /* ---------- السلة / النوافذ ---------- */
-  function openDrawer() { $("#cart-drawer").classList.add("is-open"); $("#cart-drawer").setAttribute("aria-hidden", "false"); $("#overlay").hidden = false; }
-  function closeDrawer() { $("#cart-drawer").classList.remove("is-open"); $("#cart-drawer").setAttribute("aria-hidden", "true"); $("#overlay").hidden = true; }
+  function openDrawer() { a11yRecord(); $("#cart-drawer").classList.add("is-open"); $("#cart-drawer").setAttribute("aria-hidden", "false"); $("#overlay").hidden = false; }
+  function closeDrawer() { a11yClose(); $("#cart-drawer").classList.remove("is-open"); $("#cart-drawer").setAttribute("aria-hidden", "true"); $("#overlay").hidden = true; }
   function openModal() {
     renderCartDrawer();
     $("#checkout-modal").hidden = false;
+    a11yOpen($("#checkout-modal"));
     document.body.style.overflow = "hidden";
   }
-  function closeModal() { $("#checkout-modal").hidden = true; document.body.style.overflow = ""; $("#checkout-error").textContent = ""; }
+  function closeModal() { a11yClose(); $("#checkout-modal").hidden = true; document.body.style.overflow = ""; $("#checkout-error").textContent = ""; }
 
   /* ---------- إتمام الطلب ---------- */
   function submitOrder(ev) {
@@ -714,6 +746,46 @@
       : '<tr><td colspan="5" class="d-empty">ما كاينش سجل فهاد الفترة.</td></tr>';
   }
 
+  /* ---------- تصدير CSV ---------- */
+  function csvCell(v) {
+    const s = String(v == null ? "" : v);
+    return /[",\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+  }
+
+  function buildDailyCSV() {
+    const rows = Store.getDailyLog(state.dailyRange);
+    const head = ["date", "orders", "count", "revenue", "delivered", "avg"];
+    const lines = rows.map(r => [r.date, r.orders, r.count, r.revenue, r.delivered, r.avg].map(csvCell).join(","));
+    return "\uFEFF" + head.join(",") + "\n" + lines.join("\n");
+  }
+
+  function buildOrdersCSV() {
+    const orders = Store.getOrders();
+    const head = ["id", "createdAt", "name", "phone", "payment", "items", "status", "total"];
+    const lines = orders.map(o => [
+      o.id,
+      o.createdAt,
+      o.customer ? (o.customer.name || "") : "",
+      o.customer ? (o.customer.phone || "") : "",
+      o.customer ? (o.customer.payment || "") : "",
+      o.items ? o.items.map(i => (i.name || i.id || "") + " x" + i.qty).join(" | ") : "",
+      o.status,
+      o.total
+    ].map(csvCell).join(","));
+    return "\uFEFF" + head.join(",") + "\n" + lines.join("\n");
+  }
+
+  function downloadCSV(fileName, content) {
+    const blob = new Blob([content], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 50);
+  }
+
   function refreshAdmin() {
     const a = Analytics.compute(Store.getOrders(), menu);
     adminCards(a);
@@ -725,8 +797,8 @@
   }
 
   /* ---------- المساعد الذكي ---------- */
-  function chatOpen() { $("#chat-panel").classList.add("is-open"); $("#chat-panel").setAttribute("aria-hidden", "false"); $("#chat-field").focus(); }
-  function chatClose() { $("#chat-panel").classList.remove("is-open"); $("#chat-panel").setAttribute("aria-hidden", "true"); }
+  function chatOpen() { a11yRecord(); $("#chat-panel").classList.add("is-open"); $("#chat-panel").setAttribute("aria-hidden", "false"); $("#chat-field").focus(); }
+  function chatClose() { a11yClose(); $("#chat-panel").classList.remove("is-open"); $("#chat-panel").setAttribute("aria-hidden", "true"); }
 
   function chatBubble(text, who) {
     const log = $("#chat-log");
@@ -808,12 +880,25 @@
         return;
       }
 
+      if (e.target.closest("#orders-export")) { downloadCSV("snackly-orders.csv", buildOrdersCSV()); return; }
+      if (e.target.closest("#daily-export")) { downloadCSV("snackly-daily.csv", buildDailyCSV()); return; }
+
       const statusBtn = e.target.closest("[data-status]");
       if (statusBtn) {
         const [oid, key] = statusBtn.dataset.status.split(":");
         const res = Store.updateStatus(oid, key, key === "CANCEL");
         if (res) { toast("الطلب " + oid + " → " + ORDER_STATUS[key].label, "ok"); renderOrdersQueue(); refreshAdmin(); if (state.tab === "customer") renderTracking(); }
         else toast("تبديل الحالة غير مسموح ⚠️", "err");
+        return;
+      }
+
+      const trackCancelBtn = e.target.closest("[data-track-cancel]");
+      if (trackCancelBtn) {
+        const oid = trackCancelBtn.dataset.trackCancel;
+        if (!window.confirm(Lang.t("track_cancel_confirm"))) return;
+        const res = Store.updateStatus(oid, "CANCEL", true);
+        if (res) { toast("الطلب " + oid + " → " + ORDER_STATUS.CANCEL.label, "ok"); renderTracking(); }
+        else toast("لا يمكن إلغاء هذا الطلب ⚠️", "err");
         return;
       }
 
@@ -835,6 +920,24 @@
       const langPick = e.target.closest("[data-lang]");
       if (langPick) { setLang(langPick.dataset.lang); hideLangMenu(); return; }
       if (!e.target.closest("#lang-switch-head")) hideLangMenu();
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        if (!$("#checkout-modal").hidden) closeModal();
+        else if (!$("#pin-modal").hidden) closePinModal();
+        else if (!$("#qr-modal").hidden) closeQrModal();
+        else if ($("#cart-drawer").classList.contains("is-open")) closeDrawer();
+        else if ($("#chat-panel").classList.contains("is-open")) chatClose();
+        return;
+      }
+      if (e.key !== "Tab" || !_trapRoot) return;
+      const els = a11yFocusables(_trapRoot);
+      if (!els.length) return;
+      const first = els[0], last = els[els.length - 1];
+      const active = document.activeElement;
+      if (e.shiftKey && (active === first || !_trapRoot.contains(active))) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && (active === last || !_trapRoot.contains(active))) { e.preventDefault(); first.focus(); }
     });
 
     const reserveForm = $("#reserve-form");

@@ -34,8 +34,8 @@ const CATEGORIES = [
 /* ثوابت الشركة (قابلة للتعديل من هنا فقط) */
 const BUSINESS = {
   name: "سنوكلي Snackly",
-  phone: "0522-000000",
-  whatsapp: "212600001234",
+  phone: "212650169277",
+  whatsapp: "212650169277",
   address: "شارع محمد الخامس، زنقة أكدال، الرباط",
   location: { lat: 34.0209, lng: -6.8416 },
   city: "الرباط",

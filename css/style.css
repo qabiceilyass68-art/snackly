@@ -646,6 +646,11 @@ body::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--grad-1
 .lang-menu button.is-active { background: linear-gradient(135deg, var(--grad-1), var(--grad-2)); color: #fff; }
 
 @media (max-width: 640px) {
+  .header-inner { row-gap: .4rem; }
+  .brand-tag { display: none; }
+  .header-actions { flex-wrap: wrap; }
+  .header-actions > * { flex: 0 0 auto; }
+  .lang-switch { padding-block: .7rem; }
   .header-reserve .rv-label { display: none; }
   .header-reserve { padding-inline: .8rem; }
   .call-fab { width: 50px; height: 50px; bottom: 198px; left: 14px; font-size: 1.25rem; }

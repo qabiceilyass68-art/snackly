@@ -361,10 +361,68 @@
     if (fc) fc.textContent = BUSINESS.city || "";
     const pp = $("#promo-poster");
     if (pp && GALLERY && GALLERY.promo) pp.src = GALLERY.promo;
+    hydratePromoVideo();
     const st = $("#store-img");
     if (st && GALLERY && GALLERY.storefront) st.src = GALLERY.storefront;
     observeReveals(document);
     renderSocials();
+  }
+
+  function hydratePromoVideo() {
+    const box = $("#promo-video");
+    if (!box) return;
+    const reel = $("#promo-reel");
+    const stored = Store.read("promoVideo", "");
+    if (stored && reel) {
+      reel.src = stored;
+      reel.muted = true;
+      box.classList.add("has-video");
+      reel.play().catch(() => { /* autoplay قد يُحجب حتى التفاعل — يكفي العرض */ });
+    } else if (reel) {
+      reel.removeAttribute("src");
+      box.classList.remove("has-video");
+    }
+  }
+
+  function updatePromoVideoState() {
+    const st = $("#promo-video-state");
+    if (!st) return;
+    st.textContent = Store.read("promoVideo", "") ? "✓ فيديو محمّل — الآن يعرض في الريلز 9:16" : "لا فيديو بعد — البوستر ظاهر";
+  }
+
+  function onPromoVideoUpload(e) {
+    const input = e.target;
+    const file = input.files && input.files[0];
+    if (!file) return;
+    if (file.size > 3.5 * 1024 * 1024) {
+      toast("الفيديو كبير جداً — الحد التخزيني للمتصفح ≈3.5MB؛ اختر مقطعاً قصيراً أو ضغّطه", "err");
+      input.value = "";
+      return;
+    }
+    const rd = new FileReader();
+    rd.onload = () => {
+      const dataUrl = String(rd.result || "");
+      if (!Store.write("promoVideo", dataUrl)) {
+        toast("ما كانسال الحفظ — التخزين المحلي ممتلئ", "err");
+        input.value = "";
+        return;
+      }
+      Store.log("info", "رُفع فيديو ترويجي (" + Math.round(file.size / 1024) + " KB)");
+      hydratePromoVideo();
+      updatePromoVideoState();
+      toast("تم رفع الفيديو الترويجي 🎬", "ok");
+      input.value = "";
+    };
+    rd.onerror = () => { toast("تعذّرت قراءة الملف", "err"); };
+    rd.readAsDataURL(file);
+  }
+
+  function onPromoVideoClear() {
+    Store.remove("promoVideo");
+    Store.log("info", "مُسح الفيديو الترويجي");
+    hydratePromoVideo();
+    updatePromoVideoState();
+    toast("تم مسح الفيديو الترويجي", "ok");
   }
 
   /* ---------- M15: الشريط / الآراء / المنصات / الحجز / الشكاوى / اللغة ---------- */
@@ -663,6 +721,7 @@
     renderAnalytics(a);
     renderDailyLog();
     renderLog();
+    updatePromoVideoState();
   }
 
   /* ---------- المساعد الذكي ---------- */
@@ -788,6 +847,10 @@
     $("#admin-logout").addEventListener("click", () => { clearAdminAuth(); Store.log("info", "خرج من لوحة الإدارة"); switchTab("customer"); toast("خرجتي من اللوحة 🔒", "ok"); });
     $("#pin-form").addEventListener("submit", submitPin);
     $("#log-clear").addEventListener("click", () => { Store.clearLog(); renderLog(); toast("تم مسح السجل", "ok"); });
+    const promoFile = $("#promo-video-file");
+    if (promoFile) promoFile.addEventListener("change", onPromoVideoUpload);
+    const promoClear = $("#promo-video-clear");
+    if (promoClear) promoClear.addEventListener("click", onPromoVideoClear);
     $("#daily-clear").addEventListener("click", () => { Store.clearDailyLog(); renderDailyLog(); toast("تم مسح السجل اليومي 🗑", "ok"); });
     $("#chat-fab").addEventListener("click", chatOpen);
     const qrFab = $("#qr-fab");

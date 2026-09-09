@@ -195,8 +195,9 @@
             <h2 class="section-title" id="video-title" data-i18n="video_t">اكتشف سنوكلي 🎬</h2>
           </div>
         </div>
-        <div class="promo-video glass-card">
+        <div class="promo-video glass-card" id="promo-video">
           <div class="promo-video-inner">
+            <video class="promo-reel" id="promo-reel" controls muted loop playsinline preload="metadata"></video>
             <img class="promo-poster" id="promo-poster" alt="" loading="lazy" onerror="this.remove()" data-reveal>
             <div class="promo-overlay">
               <span class="promo-play" aria-hidden="true">▶</span>
@@ -272,6 +273,19 @@
         </div>
 
         <div class="admin-cards" id="admin-cards" aria-label="بطاقات مؤشرات"></div>
+
+        <div class="panel glass-card" style="margin-bottom:1.5rem">
+          <div class="panel-head">
+            <h3>الفيديو الترويجي 🎬</h3>
+            <p class="panel-hint">ارفع فيديو (الريلز 9:16) ليعرض في مساحة الفيديو</p>
+          </div>
+          <div class="promo-admin-row">
+            <input type="file" id="promo-video-file" accept="video/*, .mp4, .webm, .ogg" hidden>
+            <label class="btn btn-primary" for="promo-video-file">📤 اختيار فيديو من الملفات</label>
+            <button class="btn btn-ghost btn-sm" type="button" id="promo-video-clear">🗑 مسح الفيديو</button>
+            <span class="panel-hint promo-video-state" id="promo-video-state"></span>
+          </div>
+        </div>
 
         <div class="panel glass-card" style="margin-bottom:1.5rem">
           <div class="panel-head">

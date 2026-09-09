@@ -512,6 +512,11 @@ body::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--grad-1
 
 /* ---------- استجابة ---------- */
 @media (max-width: 640px) {
+  .section { margin-top: 2.5rem; }
+  .blob { filter: blur(40px); }
+  .site-header, .glass-card { backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); }
+  .chat-panel { bottom: calc(96px + env(safe-area-inset-bottom)); }
+  .toast-wrap { bottom: calc(22px + env(safe-area-inset-bottom)); }
   .header-inner { gap: .5rem; }
   .main-nav { display: none; }
   .btn-cart .cart-label { display: none; }
@@ -651,13 +656,14 @@ body::-webkit-scrollbar-thumb { background: linear-gradient(180deg, var(--grad-1
   .header-actions { flex-wrap: wrap; }
   .header-actions > * { flex: 0 0 auto; }
   .lang-switch { padding-block: .7rem; }
+  .lang-menu { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
   .header-reserve .rv-label { display: none; }
   .header-reserve { padding-inline: .8rem; }
   .call-fab { width: 50px; height: 50px; bottom: 198px; left: 14px; font-size: 1.25rem; }
   .call-fab .call-dot { width: 11px; height: 11px; border-width: 2px; }
   .wa-fab { width: 50px; height: 50px; bottom: 82px; left: 14px; }
   .chat-fab { width: 50px; height: 50px; bottom: 18px; left: 14px; }
-  .fab-row { bottom: 18px; left: 14px; gap: 8px; }
+  .fab-row { bottom: calc(18px + env(safe-area-inset-bottom)); left: 14px; gap: 8px; }
   .ticker-item { font-size: .82rem; }
   .promo-video-inner { min-height: 170px; }
 }
